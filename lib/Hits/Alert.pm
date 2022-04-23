@@ -5,8 +5,9 @@ use warnings;
 use feature 'say';
 
 use Moo;
-use POSIX qw( strftime );
 use Data::Dumper;
+
+extends 'Hits';
 
 has sec_threshold => (
   is  => 'ro',
@@ -116,13 +117,6 @@ sub _get_report_msg {
     $self->_hits_120_sum,
     $self->_alert_threshold
   );
-}
-
-sub _get_report_dt {
-  my ($self, $ts) = @_;
-
-  # converting from ts to datetime
-  return strftime("%Y-%m-%d %H:%M:%S", localtime($ts));
 }
 
 1;

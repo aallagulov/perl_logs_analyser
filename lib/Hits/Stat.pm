@@ -5,8 +5,9 @@ use warnings;
 use feature 'say';
  
 use Moo;
-use POSIX qw( strftime );
 use Data::Dumper;
+
+extends 'Hits';
 
 has _last_time_range => (
   is  => 'ro',
@@ -94,13 +95,6 @@ sub _get_report_msg {
 		$msg .= sprintf("%s - %d; ", $route, $report->{$route});
 	}
 	say $msg;
-}
-
-sub _get_report_dt {
-	my ($self, $ts) = @_;
-
-	# converting from ts to datetime
-	return strftime("%Y-%m-%d %H:%M:%S", localtime($ts));
 }
 
 1;
