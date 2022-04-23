@@ -5,9 +5,13 @@ use warnings;
 use feature 'say';
 
 use Getopt::Long;
+use Pod::Usage;
 use Text::CSV_XS;
 use POSIX qw( strftime );
-# use Data::Dumper;
+use Data::Dumper;
+
+use lib './lib';
+use Hits::Stat;
 
 main();
 
@@ -52,6 +56,11 @@ sub process_csv {
 	my $hits = {};
 
 	my ($last_time_range, $report_time_range, $last_ts);
+
+	my $stat = Hits::Stat->new();
+
+
+	say $stat->dt;
 
 	while (my $row = $csv->getline_hr($fh)) {
 		my $time_range = int($row->{date} / 10);
