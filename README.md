@@ -10,6 +10,7 @@ apt install libmoo-perl
 
 Usage:
 ```$ perl cli.pl -f sample_csv.txt```
+
 Stdout:
 ```
 2019-02-08 00:10:50 - 2019-02-08 00:11:00: Hits stats for routes: /api - 1;

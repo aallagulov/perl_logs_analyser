@@ -107,14 +107,15 @@ sub _get_report_msg {
   my ($self, $ts) = @_;
 
   my $dt = $self->_get_report_dt($ts);
-  my $msg_main = $self->_is_alerting ?
-    "!!! HIGH TRAFFIC GENERATED ALERT :" :
-    "!!! ALERT RECOVERED :";
+  my ($msg_main, $sign) = $self->_is_alerting ?
+    ("!!! HIGH TRAFFIC GENERATED ALERT :", '>') :
+    ("!!! ALERT RECOVERED :", '<');
   say sprintf(
-    "%s: %s %d hits for 2 minutes < %d threshold !!!",
+    "%s: %s %d hits for 2 minutes %s %d threshold !!!",
     $dt,
     $msg_main,
     $self->_hits_120_sum,
+    $sign,
     $self->_alert_threshold
   );
 }
