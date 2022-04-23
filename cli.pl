@@ -50,9 +50,7 @@ sub process_csv {
 	my ($csv, $fh, $threshold) = @_;
 
 	my $stat = Hits::Stat->new();
-	my $alert = Hits::Alert->new(
-		sec_threshold =>  $threshold,
-	);
+	my $alert = Hits::Alert->new(sec_threshold => $threshold);
 
 	while (my $row = $csv->getline_hr($fh)) {
 		$stat->process_row($row);
