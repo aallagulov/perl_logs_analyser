@@ -1,0 +1,60 @@
+Hi folks!
+
+Initially I spent for this task 1:30 hr - 2 hr
+The alghoritm was working, but it was not covered by tests and also there were no OOP (classes, etc)
+Then HR persuaded me to improve my solution and I spend some more ime for finishing it (2-3hrs)
+
+Regarding he problem - as I see there are 2 subproblems:
+1) stats calculation
+2) alerting
+
+For both of problems the main problem is that records are not ordered in the log file:
+"10.0.0.5","-","apache",1549573861,"POST /report HTTP/1.0",200,1136
+"10.0.0.5","-","apache",1549573862,"GET /report HTTP/1.0",200,1261
+"10.0.0.2","-","apache",1549573863,"POST /api/user HTTP/1.0",404,1307
+"10.0.0.2","-","apache",1549573862,"GET /api/user HTTP/1.0",200,1234 <-- request from the past =(
+"10.0.0.4","-","apache",1549573861,"GET /api/user HTTP/1.0",200,1234 <-- another request from the past =(
+"10.0.0.1","-","apache",1549573862,"GET /api/help HTTP/1.0",500,1136
+
+So we can either:
+1. skip all the new records "form the past" - simplifies the code, but a lot of stats will be missed
+2. use a buffer and return stats not reactively, but after some time, when all the requests from the past will be already calculated in stats
+
+I decided to use the 2nd approach - which made code a little bit overcomplocated and also alerts and stats a little bit unordered in stdout
+2019-02-08 00:13:40 - 2019-02-08 00:13:50: Hits stats for routes: /api - 21; /report - 10;
+2019-02-08 00:14:03: !!! ALERT RECOVERED : 1196 hits for 2 minutes < 1200 threshold !!!
+2019-02-08 00:13:50 - 2019-02-08 00:14:00: Hits stats for routes: /api - 21; /report - 10;
+
+Regarding efficiency - I don't store anything else besides the needed metrics for 10secs/120secs time ranges and clean the old ones metrics also. So memory consumption should be not the case. Also I read the file only one time...
+
+Regarding improvements:
+1. In real world we will probably change the logic from csv file reading to service-daemon and streaming. So, code inside of loop
+while (my $row = $csv->getline_hr($fh)) {
+will be living in this service.
+
+2. If we will have billions of qps, and one node of this analyser will be not enough - we can change the architecture to sort of map-reduce
+2a. a lot of recievers that will be accumulating metrics and periodically send them into another service
+2b. another service - metrics aggregator - it will recieve&analyse incoming data, fire alerts...
+
+3. There are some test cases when Hits::Stat will be not displaying anything, because the report datarange is too old. In real world I think the logic will be different - make report not based n logs and order, but dump it periodically (check every 1 sec as example) - so this will not be a case...
+
+Installation steps:
+1. I hope you have unix-based OS with Perl installed - if not -> pls install Perl somehow
+2. You need only some additional Perl modules, which could be installed as a package:
+```
+apt install libtext-csv-perl
+apt install libmoo-perl
+```
+
+Usage:
+```$ perl cli.pl -f sample_csv.txt```
+
+Stdout:
+```
+2019-02-08 00:10:50 - 2019-02-08 00:11:00: Hits stats for routes: /api - 1;
+2019-02-08 00:11:00 - 2019-02-08 00:11:10: Hits stats for routes: /api - 58; /report - 31;
+2019-02-08 00:11:10 - 2019-02-08 00:11:20: Hits stats for routes: /api - 59; /report - 28;
+2019-02-08 00:11:20 - 2019-02-08 00:11:30: Hits stats for routes: /api - 63; /report - 31;
+2019-02-08 00:11:30 - 2019-02-08 00:11:40: Hits stats for routes: /api - 60; /report - 31;
+...
+```
