@@ -7,11 +7,13 @@ apt install libtext-csv-perl
 apt install libmoo-perl
 
 Usage:
-$ perl cli.pl -f sample_csv.txt
+```$ perl cli.pl -f sample_csv.txt```
 Stdout:
+```
 2019-02-08 00:10:50 - 2019-02-08 00:11:00: Hits stats for routes: /api - 1;
 2019-02-08 00:11:00 - 2019-02-08 00:11:10: Hits stats for routes: /api - 58; /report - 31;
 2019-02-08 00:11:10 - 2019-02-08 00:11:20: Hits stats for routes: /api - 59; /report - 28;
 2019-02-08 00:11:20 - 2019-02-08 00:11:30: Hits stats for routes: /api - 63; /report - 31;
 2019-02-08 00:11:30 - 2019-02-08 00:11:40: Hits stats for routes: /api - 60; /report - 31;
 ...
+```
