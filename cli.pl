@@ -52,10 +52,9 @@ sub process_csv {
 	my $hits_120_sum = 0;
 	my $is_alerting = 0;
 
-	my $hits_per_10_secs = {};
 	my $hits = {};
 
-	my ($last_time_range, $report_time_range, $last_ts);
+	my ($last_ts);
 
 	my $stat = Hits::Stat->new();
 
