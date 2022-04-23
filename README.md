@@ -3,8 +3,10 @@ perl_logs_analyser
 Installation steps:
 1. I hope you have unix-based OS with Perl installed - if not -> pls install Perl somehow
 2. You need only some additional Perl modules, which could be installed as a package:
+```
 apt install libtext-csv-perl
 apt install libmoo-perl
+```
 
 Usage:
 ```$ perl cli.pl -f sample_csv.txt```
