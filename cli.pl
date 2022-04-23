@@ -59,41 +59,10 @@ sub process_csv {
 
 	my $stat = Hits::Stat->new();
 
-
-	say $stat->dt;
-
 	while (my $row = $csv->getline_hr($fh)) {
-		my $time_range = int($row->{date} / 10);
-
-		# here we set initial values from the 1st row
-		$last_time_range //= $time_range;
-		$report_time_range //= $last_time_range - 2;
 		$last_ts //= $row->{date};
 
-		# regex to cut "/api" from "POST /api/whatever ..."
-		my ($section) = ($row->{request} =~ /[^\/+](\/\w+)/);
-		$hits_per_10_secs->{$time_range}{$section}++;
-
-		# we have a lot of unordered records
-		# to sum up those records which will came later
-		# we will report stats not reactively (for last 10 secs)
-		# but with a 10 secs delay (for 10 secs before last 10 secs)
-		if ($time_range > $last_time_range) {
-			$last_time_range = $time_range;
-			$report_time_range = $last_time_range - 2;
-		}
-
-		if (my $report = $hits_per_10_secs->{$report_time_range}) {
-			my $report_dt_start = strftime("%Y-%m-%d %H:%M:%S", localtime($report_time_range*10));
-			my $report_dt_end = strftime("%Y-%m-%d %H:%M:%S", localtime(($report_time_range+1)*10));
-			my $msg = "$report_dt_start - $report_dt_end: Hits stats for routes: ";
-			for my $route (sort (keys %$report)) {
-				$msg .= sprintf("%s - %d; ", $route, $report->{$route});
-			}
-			say $msg;
-
-			delete $hits_per_10_secs->{$report_time_range};
-		}
+		$stat->process_row($row);
 
 		$hits->{$row->{date}}++;
 		$hits_120_sum++;
