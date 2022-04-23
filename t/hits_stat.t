@@ -73,6 +73,7 @@ for my $case (
     	{date=>'29',request=>'GET /help', stdout => ''},
     	{date=>'30',request=>'GET /api', stdout => "1970-01-01 03:00:10 - 1970-01-01 03:00:20: Hits stats for routes: /api - 10; \n"},
     	{date=>'40',request=>'GET /api', stdout => "1970-01-01 03:00:20 - 1970-01-01 03:00:30: Hits stats for routes: /api - 1; /help - 1; \n"},
+    	{date=>'1000',request=>'GET /api', stdout => ""},
     ];
 	my $stat = Hits::Stat->new();
 	for my $row (@$rows) {

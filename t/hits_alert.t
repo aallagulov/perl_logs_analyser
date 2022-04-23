@@ -56,7 +56,6 @@ use Hits::Alert;
            $row->{stdout},
            'Test STDOUT'
         );
-        # say Dumper($alert);
 	}
 }
 

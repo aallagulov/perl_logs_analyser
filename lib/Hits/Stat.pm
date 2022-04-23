@@ -47,6 +47,7 @@ sub process_row {
 	if ($time_range > $self->_last_time_range) {
 		$self->set_last_time_range($time_range);
 		$self->set_report_time_range($self->_last_time_range - 2);
+		$self->_expire_old_hits();
 	}
 
 	$self->_get_current_report();
@@ -72,6 +73,19 @@ sub _get_section_from_row {
 	# regex to cut "/api" from "POST /api/whatever ..."
 	my ($section) = ($row->{request} =~ /[^\/+](\/\w+)/);
 	return $section;
+}
+
+sub _expire_old_hits {
+  my ($self, $row_ts) = @_;
+
+  # we need to clean up all old hits
+  # even if we had some silent seconds w/o requests
+  # just to not have memory leaks
+  for my $time_range (sort keys %{$self->_hits_per_10_secs}) {
+  	if ($time_range < $self->_report_time_range) {
+    	delete $self->_hits_per_10_secs->{$time_range};
+  	}
+  }
 }
 
 sub _get_current_report {
