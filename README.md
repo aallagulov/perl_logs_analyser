@@ -20,3 +20,15 @@ Stdout:
 2019-02-08 00:11:30 - 2019-02-08 00:11:40: Hits stats for routes: /api - 60; /report - 31;
 ...
 ```
+
+Testing:
+```$ prove t```
+
+Stdout:
+```
+t/hits_alert.t .. ok
+t/hits_stat.t ... ok
+All tests successful.
+Files=2, Tests=61,  0 wallclock secs ( 0.02 usr  0.00 sys +  0.12 cusr  0.02 csys =  0.16 CPU)
+Result: PASS
+```
